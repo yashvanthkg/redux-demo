@@ -1,6 +1,9 @@
 const redux = require('redux')
 const createStore = redux.createStore
 const combineReducers = redux.combineReducers
+const applyMiddleware = redux.applyMiddleware
+const reduxLogger = require('redux-logger')
+const logger = reduxLogger.createLogger()
 
 // action
 const BUY_CAKE = 'BUY_CAKE';
@@ -24,6 +27,7 @@ function buyIceCream() {
 //     numOfIceCreams: 20
 // }
 
+// split the states
 const initialCakeState = {
     numOfCakes: 10
 }
@@ -51,6 +55,7 @@ const initialIceCreamState = {
 //     }
 // })
 
+// split reducers
 const cakeReducer = ((state= initialCakeState, action) => {
     switch(action.type) {
         case BUY_CAKE: return {
@@ -74,18 +79,18 @@ const iceCreamReducer = ((state= initialIceCreamState, action) => {
 })
 
 //combine reducers
-const rootReducer  =combineReducers({
+const rootReducer = combineReducers({
     cake: cakeReducer,
     iceCream: iceCreamReducer
 })
 // redux store holds application state
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 // access state via getState()
 console.log("initial sate: ", store.getState());
 
 // allow the app to subscribe changes in the store
-const unsubscribe = store.subscribe(() => console.log("Updated state: ", store.getState()) );
+const unsubscribe = store.subscribe(() => {} );
 
 //dispatch actions
 store.dispatch(buyCake());
