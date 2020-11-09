@@ -1,5 +1,6 @@
 const redux = require('redux')
 const createStore = redux.createStore
+const combineReducers = redux.combineReducers
 
 // action
 const BUY_CAKE = 'BUY_CAKE';
@@ -18,8 +19,16 @@ function buyIceCream() {
 }
 
 // application state has to be represented by single object
-const initialState = {
-    numOfCakes: 10,
+// const initialState = {
+//     numOfCakes: 10,
+//     numOfIceCreams: 20
+// }
+
+const initialCakeState = {
+    numOfCakes: 10
+}
+
+const initialIceCreamState = {
     numOfIceCreams: 20
 }
 
@@ -27,12 +36,34 @@ const initialState = {
 // initially : returns initial state by default when applcation starts
 // then for later calls, returns (prevState, action) => newState
 
-const reducer = ((state= initialState, action) => {
+// const reducer = ((state= initialState, action) => {
+//     switch(action.type) {
+//         case BUY_CAKE: return {
+//             ...state,
+//             numOfCakes: state.numOfCakes - 1
+//         }
+//         case BUY_ICECREAM: return {
+//             ...state,
+//             numOfIceCreams: state.numOfIceCreams - 1
+//         }
+
+//         default: return state;
+//     }
+// })
+
+const cakeReducer = ((state= initialCakeState, action) => {
     switch(action.type) {
         case BUY_CAKE: return {
             ...state,
             numOfCakes: state.numOfCakes - 1
         }
+
+        default: return state;
+    }
+})
+
+const iceCreamReducer = ((state= initialIceCreamState, action) => {
+    switch(action.type) {
         case BUY_ICECREAM: return {
             ...state,
             numOfIceCreams: state.numOfIceCreams - 1
@@ -42,14 +73,19 @@ const reducer = ((state= initialState, action) => {
     }
 })
 
+//combine reducers
+const rootReducer  =combineReducers({
+    cake: cakeReducer,
+    iceCream: iceCreamReducer
+})
 // redux store holds application state
-const store = createStore(reducer);
+const store = createStore(rootReducer);
 
 // access state via getState()
 console.log("initial sate: ", store.getState());
 
 // allow the app to subscribe changes in the store
-const unsubscripe = store.subscribe(() => console.log("Updated state: ", store.getState()) );
+const unsubscribe = store.subscribe(() => console.log("Updated state: ", store.getState()) );
 
 //dispatch actions
 store.dispatch(buyCake());
@@ -57,7 +93,7 @@ store.dispatch(buyCake());
 store.dispatch(buyCake());
 store.dispatch(buyIceCream());
 store.dispatch(buyIceCream());
-unsubscripe();
+unsubscribe();
 
 // run node index.js in terminal
 
